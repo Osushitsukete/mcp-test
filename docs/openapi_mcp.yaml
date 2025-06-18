@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: MCP API
+  version: 1.0.0
+  description: Claudeと連携するMCPのAPI仕様
+
+paths:
+  /list-tables:
+    get:
+      operationId: listDBtables
+      summary: データベース内のテーブル一覧を取得
+      responses:
+        '200':
+          description: テーブル一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tables:
+                    type: array
+                    items:
+                      type: string
+
+  /describe-table/{table_name}:
+    get:
+      operationId: describeTableStructure
+      summary: 指定したテーブルの構造（カラム情報）を取得
+      parameters:
+        - name: table_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: テーブル構造取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  table_name:
+                    type: string
+                  columns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        type:
+                          type: string
+                        null:
+                          type: string
+                        key:
+                          type: string
+                        default:
+                          type: string
+                        extra:
+                          type: string
+
+  /get-data/{table_name}:
+    get:
+      operationId: getTableData
+      summary: 指定したテーブルのデータを取得（期間フィルタ可能）
+      parameters:
+        - name: table_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: date_column
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: データ取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  table_name:
+                    type: string
+                  total_rows:
+                    type: integer
+                  query_conditions:
+                    type: object
+                    properties:
+                      start_date:
+                        type: string
+                      end_date:
+                        type: string
+                      date_column:
+                        type: string
+                      limit:
+                        type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /count-records/{table_name}:
+    get:
+      operationId: countTableRecords
+      summary: 指定したテーブルのレコード数を取得（期間フィルタ可能）
+      parameters:
+        - name: table_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: date_column
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: レコード数取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  table_name:
+                    type: string
+                  record_count:
+                    type: integer
+                  query_conditions:
+                    type: object
+                    properties:
+                      start_date:
+                        type: string
+                      end_date:
+                        type: string
+                      date_column:
+                        type: string
