@@ -2,7 +2,10 @@ openapi: 3.0.0
 info:
   title: MCP API
   version: 1.0.0
-  description: Minimal API spec for Claude integration
+  description: Minimal API spec for GPT integration
+
+servers:
+  - url: https://mcp.beachdev.jp:10043
 
 paths:
   /list-tables:
